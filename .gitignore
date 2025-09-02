@@ -1,0 +1,12 @@
+# Python virtual environment
+symposium_env/
+
+# API keys
+.env
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# Google Drive
+.tmp.driveupload/
