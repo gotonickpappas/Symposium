@@ -1,1 +1,5 @@
-System.out.println("hello Claude!");
+public class helloClaude {
+    public static void main(String[] args) {
+        System.out.println("hello Claude!");
+    }
+}
