@@ -22,7 +22,7 @@ PAUSE
 REM --- STEP 1: AI-Powered Narrative & Decision Updates ---
 ECHO.
 ECHO [STEP 1] Tasking Claude Code to execute instructions...
-claude "Carefully read the file 'update_instructions.txt' and execute ALL the actions it describes, in order."
+claude "Carefully read the file 'update_instructions.txt' and execute ALL the actions it describes, in order." --allowedTools "Read,Write,Edit" --verbose --output-format stream-json
 ECHO.
 ECHO Claude Code task complete.
 

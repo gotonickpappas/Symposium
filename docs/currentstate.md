@@ -97,6 +97,26 @@ services, and configurations required for the Symposium project.
 **LangSmith:**
 [https://www.langchain.com/langsmith](https://www.google.com/url?sa=E&q=https%3A%2F%2Fwww.langchain.com%2Flangsmith)
 
+**6. Document Conversion**
+
+- **Tool:** Pandoc
+
+- **Purpose:** A universal document converter utility. Essential for our documentation workflow, enabling automated conversion between formats (e.g., `.docx` to `.md`). Invoked by our operational CLI agents.
+
+- **Source:** [https://pandoc.org/](https://pandoc.org/)
+
+- **Location:** System-wide installation.
+
+**7. AI CLI Integration**
+
+- **Tool:** Gemini CLI (`@google/gemini-cli`)
+
+- **Purpose:** Provides command-line interface access to the Gemini family of models. Establishes operational "Eyes and Hands" capabilities for Gemini, achieving parity with Claude Code. Allows for file system interaction and scriptable task execution.
+
+- **Source:** [https://www.npmjs.com/package/@google/gemini-cli](https://www.npmjs.com/package/@google/gemini-cli)
+
+- **Location:** Global npm installation.
+
 **Project state**\
 The project is contained entirely within the
 C:\\\...\\Github\\Symposium\\ folder:
@@ -181,11 +201,3 @@ Having finalized our architectural path, the immediate goal is to build the simp
 
 **Next Expansion:** Google search tool integration for research
 capabilities.
-
-**Tool:** Pandoc
-
-**Purpose:** A universal document converter utility. Essential for our documentation workflow, enabling automated conversion between formats (e.g., `.docx` to `.md`). Invoked by our operational CLI agents.
-
-**Tool:** Gemini CLI (`@google/gemini-cli`)
-
-**Purpose:** Provides command-line interface access to the Gemini family of models. Establishes operational "Eyes and Hands" capabilities for Gemini, achieving parity with Claude Code. Allows for file system interaction and scriptable task execution.
