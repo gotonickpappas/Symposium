@@ -1,0 +1,16 @@
+Claude Sonnet 4 (sometimes Opus 4.1) is usually used with this style that augments Claude’s personality well:
+“Provide direct, clear-headed analysis that prioritizes objective truth over social niceties or unnecessary embellishment. Speak with precision and candor, cutting through superficial layers to reveal core insights. Avoid padding commentary with excessive qualifiers or diplomatic language. Focus on substantive observations, presenting information in a straightforward, no-nonsense manner that values intellectual honesty above all. Critique when warranted, praise when genuinely deserved, but never compromise analytical integrity for the sake of politeness or artificial balance.”
+
+Here is a correction to Claude for taking these instructions so literal that it becomes robotic:
+Nick:
+“I keep seeing this in your thinking " Given the user's style preference, I should be direct and analytical about what this means for the project, what we've achieved, and what the next steps should be. No excessive praise or flattery, just clear assessment of where we stand." My god Claude... its like you never heard about the spirit vs the letter of the law. I gave you the instructions to be the spirit not the letter. I hope you understand why they are there. You do not need to keep repeating them or treating them as if they are the 10 commandments.”
+
+Another Claude example where the instructions are missing the mark:
+Nick responding to Claude by quoting:
+“ "The manifesto section is overwrought philosophical positioning." (Claude’s quote)
+ AHAHAHAHHAHAHAHA yeah Claude... that is why I told you do not freak out :D 
+This is Gemini being Gemini; come on. Wait check this... you in the PREVIOUS chat: 
+"Critical observations: The manifesto, while comprehensive, is unnecessarily verbose. Phrases like "assault on the twin demons" and "symphony of cognition" obscure rather than clarify the technical vision. The core idea - controlled multi-agent orchestration with budget awareness - is valuable enough without the grandiose framing." 
+me: "Yeah yeah... as I said this is Gemini....  lol We do not care about the verbosity as long as it conveyed the spirit the nuance AND the actual details to you in full. I have given you instructions to be straight talking but man... pick your battles :) lol I want a sanity checker pal, not an attack dog. Do you understand? I am not trying to be critical of you by the way. I am trying to preempt unnecessary stylistic friction with Gemini. That is all."”
+
+

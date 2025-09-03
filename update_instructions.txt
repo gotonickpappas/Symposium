@@ -1,0 +1,46 @@
+TASK: Perform a comprehensive update of the project's knowledge base to reflect the pivotal "Eyes vs. Hands" session.
+
+ACTIONS:
+
+1.  **Update `docs/currentstate.md`:**
+    *   In the "Toolchain & Configuration" section, add two new entries:
+        *   **Tool:** Pandoc
+            *   **Purpose:** A universal document converter utility. Essential for our documentation workflow, enabling automated conversion between formats (e.g., `.docx` to `.md`). Invoked by our operational CLI agents.
+        *   **Tool:** Gemini CLI (`@google/gemini-cli`)
+            *   **Purpose:** Provides command-line interface access to the Gemini family of models. Establishes operational "Eyes and Hands" capabilities for Gemini, achieving parity with Claude Code. Allows for file system interaction and scriptable task execution.
+    *   In the "Immediate Next Step" section, completely replace the existing text with the following:
+        *   **[CRITICAL] Begin "Vertical Slice 0: The Heartbeat"**
+        *   Having finalized our architectural path, the immediate goal is to build the simplest possible end-to-end connection between our backend and frontend. This "heartbeat" slice will validate the entire technology stack and workflow.
+        *   **Tasks:**
+            *   1. Establish a parallel directory structure: `/backend` for our Python/FastAPI application and `/frontend` for our Node.js/React application.
+            *   2. In the backend, create a single FastAPI endpoint (`/api/heartbeat`) that uses the existing Orchestrator to get a simple, hardcoded response from an LLM.
+            *   3. In the frontend, create a basic React app with a single button that, when clicked, calls the `/api/heartbeat` endpoint and displays the returned message.
+
+2.  **Update `docs/historylog.md`:**
+    *   Append the following new entry to the very end of the file.
+    *   ---
+    *   **Entry 5: The 'Eyes vs. Hands' Breakthrough & The Automation of Knowledge**
+    *   **Summary:** This session was a monumental turning point for the Symposium. We confronted a critical bottleneck in our documentation and knowledge-sharing process. This led to a complete overhaul of our workflow, shifting from a monolithic document to a modular, file-based "Symposium Knowledge Management Protocol." The core breakthrough was the discovery and validation of the "Eyes vs. Hands" principle: distinguishing between the read-only capabilities of web UIs ("Eyes") and the read-write-execute capabilities of local CLIs ("Hands"). We proved this principle in a live experiment where `Claude Code`, acting as an operational agent, used the newly-installed `pandoc` tool to successfully convert our documentation files. The subsequent installation of the `Gemini CLI` established true operational parity, giving us two distinct "Hands-on" agents. This session solidified our architectural choices and transformed our development process from manual and tedious to automated and robust.
+    *   **Key Decisions & Achievements:**
+        *   **Modular Documentation Protocol:** Abandoned the monolithic master document in favor of a clean, modular structure of Markdown (`.md`) files in a dedicated `/docs` directory.
+        *   **"Eyes vs. Hands" Principle Validated:** Successfully demonstrated that local CLI agents (`Claude Code`, `Gemini CLI`) possess read-write-execute capabilities, unlike their web-based counterparts. This unlocks true task automation.
+        *   **Live Automation Success:** `Claude Code` successfully used `pandoc` to convert the entire documentation suite from `.docx` to `.md`, proving the viability of our new automated workflow.
+        *   **Operational Parity Achieved:** The installation of the `Gemini CLI` gives us two independent, scriptable agents capable of file system and command-line operations.
+        *   **Architecture Finalized:** Unanimously committed to the **FastAPI (backend) + React (frontend)** technology stack as the "most proper" solution for our complex UI requirements.
+        *   **Methodology Shift:** Rejected a rigid "backend-first" waterfall model in favor of a more agile **"Vertical Slice"** development approach, ensuring UI and backend capabilities co-evolve.
+        *   **Orchestrator Script Created:** Designed the `update_project.bat` script to create a robust, repeatable workflow for updating the entire project knowledge base, ensuring the AI narrative updates and the automated code snapshots are always in sync.
+
+3.  **Cleanup and Archive Obsolete Files:**
+    *   First, create a new directory named `Obsolete` inside the `docs/` directory.
+    *   Next, move all of the following files from the `docs/` directory into the new `docs/Obsolete/` directory:
+        *   `codesnapshot.docx`
+        *   `currentstate.docx`
+        *   `historylog.docx`
+        *   `manifest.docx`
+        *   `participantscontext.docx`
+
+4.  **Add Execution Log to This File:**
+    *   Append a new section titled "--- EXECUTION LOG ---" to the end of THIS file (`update_instructions.txt`).
+    *   Under the title, add a line specifying who is running the task and the current date and time. (Example: "Executed by: Claude Code on 2025-09-03 at HH:MM:SS").
+
+5. Push changes to github
