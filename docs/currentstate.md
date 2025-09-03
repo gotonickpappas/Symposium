@@ -169,16 +169,23 @@ architecture*
 
 Immediate Next Step
 
-**\[CRITICAL\] Determine the next step of the Yak Shaving:** We should
-probably figure out how to proceed with a way where we can all three of
-us see the UI conceptually wireframe or otherwise likely using Claude's
-tool, and translation to JSON for Gemini. At this point it seems we need
-at least SOME UI to proceed.
+**[CRITICAL] Begin "Vertical Slice 0: The Heartbeat"**
 
-**Test Python Executor:** Verify whitelist-based Python execution with
-financial calculations using Decimal precision. The infrastructure is
-complete for complex task routing between fast calculator and secure
-Python execution.
+Having finalized our architectural path, the immediate goal is to build the simplest possible end-to-end connection between our backend and frontend. This "heartbeat" slice will validate the entire technology stack and workflow.
+
+**Tasks:**
+
+1. Establish a parallel directory structure: `/backend` for our Python/FastAPI application and `/frontend` for our Node.js/React application.
+2. In the backend, create a single FastAPI endpoint (`/api/heartbeat`) that uses the existing Orchestrator to get a simple, hardcoded response from an LLM.
+3. In the frontend, create a basic React app with a single button that, when clicked, calls the `/api/heartbeat` endpoint and displays the returned message.
 
 **Next Expansion:** Google search tool integration for research
 capabilities.
+
+**Tool:** Pandoc
+
+**Purpose:** A universal document converter utility. Essential for our documentation workflow, enabling automated conversion between formats (e.g., `.docx` to `.md`). Invoked by our operational CLI agents.
+
+**Tool:** Gemini CLI (`@google/gemini-cli`)
+
+**Purpose:** Provides command-line interface access to the Gemini family of models. Establishes operational "Eyes and Hands" capabilities for Gemini, achieving parity with Claude Code. Allows for file system interaction and scriptable task execution.

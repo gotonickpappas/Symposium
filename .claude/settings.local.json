@@ -6,7 +6,8 @@
       "Bash(git push:*)",
       "Bash(pandoc:*)",
       "Bash(public.bat)",
-      "Bash(.public.bat)"
+      "Bash(.public.bat)",
+      "Bash(move:*)"
     ],
     "deny": [],
     "ask": []
