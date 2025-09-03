@@ -22,7 +22,8 @@ PAUSE
 REM --- STEP 1: AI-Powered Narrative & Decision Updates ---
 ECHO.
 ECHO [STEP 1] Tasking Claude Code to execute instructions...
-claude "Carefully read the file 'update_instructions.txt' and execute ALL the actions it describes, in order." --allowedTools "Read,Write,Edit" --verbose --output-format stream-json
+claude "Carefully read the file 'update_instructions.txt' and execute ALL the actions it describes, in order." 
+REM --allowedTools "Read,Write,Edit" --verbose --output-format stream-json if wanted to not have to answer stuff... but it is quirky
 ECHO.
 ECHO Claude Code task complete.
 
@@ -46,17 +47,25 @@ python -c "import datetime; print(datetime.datetime.now().strftime('%%Y-%%m-%%d_
 set /p timestamp=<temp_date.txt
 del temp_date.txt
 
+
 ECHO * Creating archive directory...
 REM Create the archive directory if it doesn't exist
-IF NOT EXIST "docs\Past Updates" MKDIR "docs\Past Updates"
+IF NOT EXIST "docs\PastUpdates" MKDIR "docs\PastUpdates"
 
 ECHO * Moving instruction file to archive...
 REM Rename the file to include the date and a success marker
 REN update_instructions.txt %timestamp%_update_instructions_executed.txt
+IF %ERRORLEVEL% NEQ 0 (
+    ECHO ERROR: Failed to rename instruction file
+    ECHO File may be locked or in use
+)
 
+ECHO * Waiting for file lock to release...
+REM timeout /t 2 /nobreak >nul
 REM Move the archived file to the Past Updates folder
-MOVE %timestamp%_update_instructions_executed.txt "docs\Past Updates\"
+MOVE %timestamp%_update_instructions_executed.txt "docs\PastUpdates\"
 
+publish.bat
 ECHO ✓ Instruction file archived as %timestamp%_update_instructions_executed.txt
 ECHO.
 ECHO =================================================================

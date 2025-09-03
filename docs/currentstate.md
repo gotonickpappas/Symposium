@@ -198,6 +198,3 @@ Having finalized our architectural path, the immediate goal is to build the simp
 1. Establish a parallel directory structure: `/backend` for our Python/FastAPI application and `/frontend` for our Node.js/React application.
 2. In the backend, create a single FastAPI endpoint (`/api/heartbeat`) that uses the existing Orchestrator to get a simple, hardcoded response from an LLM.
 3. In the frontend, create a basic React app with a single button that, when clicked, calls the `/api/heartbeat` endpoint and displays the returned message.
-
-**Next Expansion:** Google search tool integration for research
-capabilities.
