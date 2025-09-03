@@ -29,30 +29,35 @@ ECHO Claude Code task complete.
 REM --- STEP 2: Automated Code Snapshot Generation ---
 ECHO.
 ECHO [STEP 2] Generating a fresh code snapshot for Gemini...
+ECHO * Scanning src/ directory...
+ECHO * Processing Python source files...  
+ECHO * Including scripts/ directory...
+ECHO * Capturing root configuration files...
 python scripts/generate_code_snapshot.py
-ECHO.
-ECHO Code snapshot is now up to date.
+ECHO ✓ Code snapshot generation complete.
 
 REM --- STEP 3: AUDIT & ARCHIVE ---
 ECHO.
 ECHO [STEP 3] Archiving the completed instruction file...
+ECHO * Generating timestamp...
 
 REM Get the current date using Python (more reliable than Windows date parsing)
 python -c "import datetime; print(datetime.datetime.now().strftime('%%Y-%%m-%%d_%%H-%%M-%%S'))" > temp_date.txt
 set /p timestamp=<temp_date.txt
 del temp_date.txt
 
+ECHO * Creating archive directory...
 REM Create the archive directory if it doesn't exist
 IF NOT EXIST "docs\Past Updates" MKDIR "docs\Past Updates"
 
+ECHO * Moving instruction file to archive...
 REM Rename the file to include the date and a success marker
 REN update_instructions.txt %timestamp%_update_instructions_executed.txt
 
 REM Move the archived file to the Past Updates folder
 MOVE %timestamp%_update_instructions_executed.txt "docs\Past Updates\"
 
-ECHO.
-ECHO Instruction file has been successfully archived as %timestamp%_update_instructions_executed.txt
+ECHO ✓ Instruction file archived as %timestamp%_update_instructions_executed.txt
 ECHO.
 ECHO =================================================================
 ECHO ==           PROJECT KNOWLEDGE BASE IS NOW SYNCED              ==

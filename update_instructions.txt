@@ -1,5 +1,13 @@
 TASK: Perform a comprehensive update of the project's knowledge base to reflect the pivotal "Eyes vs. Hands" session.
 
+PROGRESS REPORTING REQUIREMENTS:
+- Print "Starting action X of Y: [description]" before each action
+- Print "Reading file: [filename]" when accessing files  
+- Print "Writing to file: [filename]" when modifying files
+- Print "Completed action X: [brief result]" after each action
+- Print "ERROR in action X: [details]" if any action fails
+
+
 ACTIONS:
 
 1.  **Update `docs/currentstate.md`:**
