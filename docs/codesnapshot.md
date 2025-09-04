@@ -2151,7 +2151,7 @@ rem --- EXECUTION ---
 rem Execute the real Gemini CLI with the original prompt AND the non-interactive flags.
 rem -p flag is mandatory to pass a prompt.
 rem -y flag (yolo) automatically accepts all actions for non-interactive use.
-gemini -p %* -y
+gemini -p %*
 
 endlocal
 ```
@@ -3979,11 +3979,7 @@ ACTIONS:
     *   Append a new section titled "--- EXECUTION LOG ---" to the end of THIS file (`update_instructions.txt`).
     *   Under the title, add a line specifying who is running the task and the current date and time. (Example: "Executed by: Claude Code on 2025-09-03 at HH:MM:SS").
 
-5. "/exit" and release control back to the batch file that started you.
-
---- EXECUTION LOG ---
-
-Executed by: Claude Code on 2025-09-04 at 11:20:00
+5. /exit
 ```
 
 **File: upp.bat**
@@ -4013,6 +4009,7 @@ if not exist update_instructions.txt (
 )
 echo [PREP] Instructions file found. The update process will now begin.
 echo.
+pause
 echo.
 
 REM --- STEP 1: AI Execution ---
@@ -4021,7 +4018,7 @@ echo -----------------------------------------------------------------
 echo   -> Tasking Claude Code to process 'update_instructions.txt'.
 echo   -> This may take a moment. Please wait for completion...
 echo.
-call .\scripts\sclaude.bat "Carefully read the file 'update_instructions.txt' and execute ALL the actions it describes, in order."
+call .\scripts\sgemini.bat "Carefully read the file 'update_instructions.txt' and execute ALL the actions it describes, in order."
 
 if %errorlevel% neq 0 (
     echo.

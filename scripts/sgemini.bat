@@ -25,6 +25,6 @@ rem --- EXECUTION ---
 rem Execute the real Gemini CLI with the original prompt AND the non-interactive flags.
 rem -p flag is mandatory to pass a prompt.
 rem -y flag (yolo) automatically accepts all actions for non-interactive use.
-gemini -p %* -y
+gemini -p %*
 
 endlocal

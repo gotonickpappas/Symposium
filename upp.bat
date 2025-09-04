@@ -31,7 +31,7 @@ echo -----------------------------------------------------------------
 echo   -> Tasking Claude Code to process 'update_instructions.txt'.
 echo   -> This may take a moment. Please wait for completion...
 echo.
-call .\scripts\sclaude.bat "Carefully read the file 'update_instructions.txt' and execute ALL the actions it describes, in order."
+call .\scripts\sgemini.bat "Carefully read the file 'update_instructions.txt' and execute ALL the actions it describes, in order."
 
 if %errorlevel% neq 0 (
     echo.
