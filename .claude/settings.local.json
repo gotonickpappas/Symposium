@@ -7,7 +7,9 @@
       "Bash(pandoc:*)",
       "Bash(public.bat)",
       "Bash(.public.bat)",
-      "Bash(move:*)"
+      "Bash(move:*)",
+      "Read(/C:\\Users\\gotoz\\OneDrive\\Workspace\\VS Code\\Github\\Symposium\\docs/**)",
+      "Read(/C:\\Users\\gotoz\\OneDrive\\Workspace\\VS Code\\Github\\Symposium\\docs/**)"
     ],
     "deny": [
       "Bash(dir:*)",

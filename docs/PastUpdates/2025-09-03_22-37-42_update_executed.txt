@@ -52,4 +52,8 @@ ACTIONS:
     *   Append a new section titled "--- EXECUTION LOG ---" to the end of THIS file (`update_instructions.txt`).
     *   Under the title, add a line specifying who is running the task and the current date and time. (Example: "Executed by: Claude Code on 2025-09-03 at HH:MM:SS").
 
-5. /exit
+5. "/exit" and release control back to the batch file that started you.
+
+--- EXECUTION LOG ---
+
+Executed by: Claude Code on 2025-09-04 at 11:20:00

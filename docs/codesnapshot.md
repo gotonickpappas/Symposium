@@ -1644,6 +1644,100 @@ We need to restrict the CLI tools autonomy on certain folders.
 
 ```
 
+**File: obsolete/update_project - Copy.bat**
+
+```batch
+@echo off
+setlocal enabledelayedexpansion
+
+REM =================================================================
+REM ==        Symposium Project Knowledge Base Updater             ==
+REM ==               (v1.5 - With Error Surfacing)                 ==
+REM =================================================================
+
+cd /d "%~dp0"
+
+echo.
+echo    +----------------------------------------------------+
+echo    ^|   Symposium Knowledge Base Update Orchestrator     ^|
+echo    +----------------------------------------------------+
+echo.
+
+REM --- PREPARATION ---
+if not exist update_instructions.txt (
+    echo [ERROR] 'update_instructions.txt' not found. Nothing to do.
+    pause
+    exit /b 1
+)
+echo [PREP] Instructions file found. The update process will now begin.
+echo.
+
+REM --- STEP 1: AI Execution ---
+echo [STEP 1/3] EXECUTING INSTRUCTIONS
+echo -----------------------------------------------------------------
+echo   -> Tasking Claude Code for automated execution.
+echo   -> A detailed log is being written to 'claude_run.log'.
+echo   -> This may take several moments...
+
+REM Delete the old log and redirect all new output to the log file.
+del claude_run.log 2>nul
+call .\scripts\sclaude.bat "Carefully read the file 'update_instructions.txt' and execute ALL the actions it describes, in order." > claude_run.log 2>&1
+
+REM ** GROK'S REFINEMENT: Check the exit code AND surface the specific error. **
+if %errorlevel% neq 0 (
+    echo.
+    echo [FATAL ERROR] AI agent reported an error during execution.
+    echo   -> The 'update_instructions.txt' file will NOT be archived.
+    echo   -> Surfacing relevant error lines from log:
+    echo.
+    findstr /C:"\"is_error\":true" /C:"\"type\":\"error\"" /C:"ERROR" /I claude_run.log
+    echo.
+    pause
+    exit /b 1
+)
+echo.
+echo   -> Claude Code task complete.
+echo [STEP 1/3] COMPLETE
+echo.
+
+REM --- STEP 2: Code Snapshot ---
+echo [STEP 2/3] GENERATING CODE SNAPSHOT
+echo -----------------------------------------------------------------
+call python scripts/generate_code_snapshot.py
+echo [STEP 2/3] COMPLETE
+echo.
+
+REM --- STEP 3: Archiving ---
+echo [STEP 3/3] ARCHIVING LOG FILE
+echo -----------------------------------------------------------------
+for /f %%i in ('python -c "import datetime; print(datetime.datetime.now().strftime('%%Y-%%m-%%d_%%H-%%M-%%S'))"') do set "timestamp=%%i"
+set "archive_filename=%timestamp%_update_executed.txt"
+set "archive_dir=docs\PastUpdates"
+
+echo   -> Generating timestamp: %timestamp%
+echo   -> Preparing to archive instructions as: %archive_filename%
+
+if not exist "%archive_dir%" ( mkdir "%archive_dir%" )
+
+move update_instructions.txt "%archive_dir%\%archive_filename%"
+
+if %errorlevel% neq 0 (
+    echo.
+    echo [ERROR] Failed to move and rename the instruction file!
+) else (
+    echo   -> Instruction file successfully archived.
+)
+echo [STEP 3/3] COMPLETE
+echo.
+
+echo.
+echo    +----------------------------------------------------+
+echo    ^|      PROJECT KNOWLEDGE BASE IS NOW SYNCED          ^|
+echo    +----------------------------------------------------+
+echo.
+pause
+```
+
 **File: publish.bat**
 
 ```batch
@@ -1834,7 +1928,7 @@ a n n o t a t e d - t y p e s = = 0 . 7 . 0 
  
  z s t a n d a r d = = 0 . 2 4 . 0 
  
- 
+ p t y p r o c e s s = = 0 . 7 . 0 
 ```
 
 **File: run.bat**
@@ -1867,7 +1961,7 @@ pause
 ```python
 #!/usr/bin/env python3
 """
-Code Snapshot Generator for Symposium Knowledge Base (v1.1)
+Code Snapshot Generator for Symposium Knowledge Base
 Walks through the entire project directory and generates a markdown-formatted code dump.
 """
 
@@ -1887,30 +1981,23 @@ def generate_code_snapshot():
     # Define what to exclude
     exclude_dirs = ["symposium_env", "__pycache__", ".git", "docs/Obsolete", "docs/PastUpdates"]
     
-    print("  -> Starting code snapshot generation...")
+    print("Starting code snapshot generation...")
     
     all_files = []
     for pattern in include_patterns:
+        # rglob scans recursively
         all_files.extend(project_root.rglob(pattern))
-    print(f"  -> Found {len(all_files)} files matching patterns.")
         
     # Filter out files in excluded directories
     final_files = []
     for file_path in all_files:
         is_excluded = False
-        # Create a comparable parts tuple for the file path
-        file_parts = file_path.relative_to(project_root).parts
         for excluded_dir in exclude_dirs:
-            # Create a comparable parts tuple for the excluded dir
-            excluded_parts = Path(excluded_dir).parts
-            # Check if the excluded path is a prefix of the file path
-            if file_parts[:len(excluded_parts)] == excluded_parts:
+            if project_root.joinpath(excluded_dir) in file_path.parents:
                 is_excluded = True
                 break
         if not is_excluded:
             final_files.append(file_path)
-
-    print(f"  -> Filtering excluded directories... {len(final_files)} files remain.")
 
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write("# Complete Module Code\n\n")
@@ -1922,6 +2009,7 @@ def generate_code_snapshot():
             try:
                 with open(file, 'r', encoding='utf-8', errors='ignore') as source:
                     content = source.read()
+                    # Determine language for markdown block
                     lang = ""
                     if file.suffix == '.py':
                         lang = "python"
@@ -1934,8 +2022,8 @@ def generate_code_snapshot():
             except Exception as e:
                 f.write(f"*Error reading file: {e}*\n\n")
 
-    print(f"  -> Writing {len(final_files)} files to '{output_file.name}'...")
-    print("  -> Snapshot generation complete.")
+    print(f"✓ Code snapshot generated: {output_file}")
+    print(f"  Processed {len(final_files)} files.")
 
 if __name__ == "__main__":
     generate_code_snapshot()
@@ -1949,17 +2037,13 @@ setlocal
 
 rem =================================================================
 rem ==        Secure, Non-Interactive Wrapper for Claude CLI       ==
-rem ==                  (v1.1 - With Automation Flags)             ==
+rem ==                  (v1.3 - Finalized Flags)                   ==
 rem =================================================================
-rem
-rem 1. Acts as a security sandbox to prevent directory traversal.
-rem 2. Automatically applies flags for non-interactive execution.
-rem
 
 set "ARGS=%*"
 
 rem --- SECURITY CHECK ---
-rem Block absolute paths (like C:\) and directory traversal (like ..\)
+rem (Our existing security check remains here)
 echo "%ARGS%" | findstr /R /C:"[a-zA-Z]:" /C:"\.\." >nul
 if %errorlevel% == 0 (
     echo [SECURITY] Blocked attempt to access outside of the project directory.
@@ -1968,9 +2052,8 @@ if %errorlevel% == 0 (
 )
 
 rem --- EXECUTION ---
-rem Execute the real Claude CLI with the original prompt AND the non-interactive flags.
-rem -p flag tells it to proceed without asking for confirmation.
-claude %* -p --allowedTools "Read,Write,Edit,Search" --verbose --output-format stream-json
+rem Execute with a minimal, safe toolset AND the required non-interactive/verbose flags.
+claude %* --allowedTools "Read,Write,Edit,Search"
 
 endlocal
 ```
@@ -2036,6 +2119,163 @@ echo.
 
 :end
 pause
+```
+
+**File: scripts/sgemini.bat**
+
+```batch
+@echo off
+setlocal
+
+rem =================================================================
+rem ==        Secure, Non-Interactive Wrapper for Gemini CLI       ==
+rem ==                  (v1.1 - With Automation Flags)             ==
+rem =================================================================
+rem
+rem 1. Acts as a security sandbox to prevent directory traversal.
+rem 2. Automatically applies flags for non-interactive execution.
+rem
+
+set "ARGS=%*"
+
+rem --- SECURITY CHECK ---
+rem Block absolute paths (like C:\) and directory traversal (like ..\)
+echo "%ARGS%" | findstr /R /C:"[a-zA-Z]:" /C:"\.\." >nul
+if %errorlevel% == 0 (
+    echo [SECURITY] Blocked attempt to access outside of the project directory.
+    echo [COMMAND] %ARGS%
+    exit /b 1
+)
+
+rem --- EXECUTION ---
+rem Execute the real Gemini CLI with the original prompt AND the non-interactive flags.
+rem -p flag is mandatory to pass a prompt.
+rem -y flag (yolo) automatically accepts all actions for non-interactive use.
+gemini -p %* -y
+
+endlocal
+```
+
+**File: scripts/upp.py**
+
+```python
+import sys
+from pathlib import Path
+import shutil
+import datetime
+import subprocess
+
+# --- Agent-Specific Configuration ---
+AGENTS = {
+    'c': {'name': 'Claude', 'command': 'claude'},
+    'g': {'name': 'Gemini', 'command': 'gemini'}
+}
+
+# --- Global Configuration ---
+PROJECT_ROOT = Path(__file__).parent.parent
+INSTRUCTIONS_FILE = PROJECT_ROOT / "update_instructions.txt"
+SNAPSHOT_SCRIPT = PROJECT_ROOT / "scripts/generate_code_snapshot.py"
+ARCHIVE_DIR = PROJECT_ROOT / "docs/PastUpdates"
+
+def run_agent_in_new_window(agent_config):
+    """
+    Launches the selected agent in a NEW, separate command window,
+    which is the only robust way to handle fully interactive CLIs.
+    """
+    agent_name = agent_config['name']
+    agent_command = agent_config['command']
+
+    print(f"  -> Launching {agent_name} in a new window.")
+    print(f"  -> Please follow the prompts in the new window.")
+    print(f"  -> This script will resume after you close the {agent_name} window.")
+    print("-----------------------------------------------------------------")
+    
+    executable_path = shutil.which(agent_command)
+    if not executable_path:
+        print(f"\n[FATAL ERROR] Could not find '{agent_command}' in your PATH.")
+        return 1
+
+    prompt = f"Carefully read the file '{INSTRUCTIONS_FILE.name}' and execute ALL the actions it describes, in order."
+    
+    # We must build the command as a single string for this method
+    full_command = f'"{executable_path}" "{prompt}"'
+
+    # --- THE DEFINITIVE FIX: CREATE_NEW_CONSOLE ---
+    # This tells Windows to spawn the process in its own, fully interactive terminal window.
+    # The 'P_WAIT' flag makes our script pause until that new window is closed.
+    return_code = os.spawnv(os.P_WAIT, executable_path, [executable_path, prompt])
+    
+    return return_code
+
+# --- Main script logic ---
+def main():
+    if len(sys.argv) < 2 or sys.argv[1] not in AGENTS:
+        print(f"Usage: {PROJECT_ROOT.name}\\upp.bat [c|g]")
+        sys.exit(1)
+        
+    agent_key = sys.argv[1]
+    agent_config = AGENTS[agent_key]
+    
+    print_header(f"Symposium Knowledge Base Updater ({agent_config['name']})")
+    
+    if not INSTRUCTIONS_FILE.exists():
+        print("[ERROR] 'update_instructions.txt' not found.")
+        sys.exit(1)
+    print("[PREP] Instructions file found. The update process will now begin.\n")
+    
+    print_step(1, 3, "EXECUTING INSTRUCTIONS")
+    return_code = run_agent_in_new_window(agent_config)
+    
+    if return_code != 0:
+        print("\n\n[FATAL ERROR] AI agent process exited with a non-zero status code.")
+        sys.exit(1)
+        
+    print("\n-----------------------------------------------------------------")
+    print("\n  -> Agent task complete.")
+    print_step_complete(1, 3)
+    
+    print_step(2, 3, "GENERATING CODE SNAPSHOT")
+    result = subprocess.run([sys.executable, str(SNAPSHOT_SCRIPT)], capture_output=True, text=True, check=True, encoding='utf-8')
+    summary_line = result.stdout.strip().split('\n')[-1]
+    print(f"  -> {summary_line}")
+    print_step_complete(2, 3)
+    
+    print_step(3, 3, "ARCHIVING LOG FILE")
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    archive_filename = f"{timestamp}_update_executed.txt"
+    archive_path = ARCHIVE_DIR / archive_filename
+    
+    print(f"  -> Archiving instructions as: {archive_filename}")
+    
+    ARCHIVE_DIR.mkdir(exist_ok=True)
+    shutil.move(str(INSTRUCTIONS_FILE), str(archive_path))
+    print("  -> Instruction file successfully archived.")
+    print_step_complete(3, 3)
+    
+    print_footer("PROJECT KNOWLEDGE BASE IS NOW SYNCED")
+
+
+def print_header(title):
+    print(f"   +{'-' * (len(title) + 4)}+")
+    print(f"   |  {title}  |")
+    print(f"   +{'-' * (len(title) + 4)}+\n")
+
+def print_footer(title):
+    print(f"\n   +{'=' * (len(title) + 4)}+")
+    print(f"   |  {title}  |")
+    print(f"   +{'=' * (len(title) + 4)}+\n")
+
+def print_step(current, total, title):
+    print(f"[STEP {current}/{total}] {title}")
+    print("-----------------------------------------------------------------")
+
+def print_step_complete(current, total):
+    print(f"[STEP {current}/{total}] COMPLETE\n")
+
+# Need to import os for os.spawnv
+import os
+if __name__ == "__main__":
+    main()
 ```
 
 **File: src/controllers/__init__.py**
@@ -3726,9 +3966,9 @@ ACTIONS:
         *   **Methodology Shift:** Rejected a rigid "backend-first" waterfall model in favor of a more agile **"Vertical Slice"** development approach, ensuring UI and backend capabilities co-evolve.
         *   **Orchestrator Script Created:** Designed the `update_project.bat` script to create a robust, repeatable workflow for updating the entire project knowledge base, ensuring the AI narrative updates and the automated code snapshots are always in sync.
 
-3.  **Cleanup and Archive Obsolete Files:**
-    *   First, create a new directory named `Obsolete` inside the `docs/` directory.
-    *   Next, move all of the following files from the `docs/` directory into the new `docs/Obsolete/` directory:
+3.  **Ensure Obsolete Files are Archived:**
+    *   First, ensure the directory `docs/Obsolete` exists. If it does not, create it.
+    *   Next, for each of the following files, ensure it is located in the `docs/Obsolete/` directory. If it is found in the main `docs/` directory, move it.
         *   `codesnapshot.docx`
         *   `currentstate.docx`
         *   `historylog.docx`
@@ -3739,24 +3979,14 @@ ACTIONS:
     *   Append a new section titled "--- EXECUTION LOG ---" to the end of THIS file (`update_instructions.txt`).
     *   Under the title, add a line specifying who is running the task and the current date and time. (Example: "Executed by: Claude Code on 2025-09-03 at HH:MM:SS").
 
+5. "/exit" and release control back to the batch file that started you.
 
 --- EXECUTION LOG ---
 
-Executed by: Claude Code on 2025-09-03 at 10:58:00
-
-EXECUTION RESULTS:
-- Action 1: Update docs/currentstate.md - Pandoc and Gemini CLI entries already present in Toolchain section
-- Action 2: Update docs/currentstate.md - Immediate Next Step section already contains required content  
-- Action 3: Update docs/historylog.md - Entry 5 already appended to file
-- Action 4: Create docs/Obsolete directory - No .docx files found to archive, directory creation not needed
-- Action 5: Move obsolete .docx files - No .docx files exist in docs/ directory
-- Action 6: Add execution log - COMPLETED
-
-STATUS: All requested actions have been executed. Most updates were already in place from previous runs.
-
+Executed by: Claude Code on 2025-09-04 at 11:20:00
 ```
 
-**File: update_project.bat**
+**File: upp.bat**
 
 ```batch
 @echo off
@@ -3764,7 +3994,7 @@ setlocal enabledelayedexpansion
 
 REM =================================================================
 REM ==        Symposium Project Knowledge Base Updater             ==
-REM ==        (v1.3 - Clean Call to Non-Interactive Wrapper)       ==
+REM ==                  (v1.1 - With Progress Indicators)            ==
 REM =================================================================
 
 cd /d "%~dp0"
@@ -3788,11 +4018,9 @@ echo.
 REM --- STEP 1: AI Execution ---
 echo [STEP 1/3] EXECUTING INSTRUCTIONS
 echo -----------------------------------------------------------------
-echo   -> Tasking Claude Code for fully automated execution.
+echo   -> Tasking Claude Code to process 'update_instructions.txt'.
 echo   -> This may take a moment. Please wait for completion...
 echo.
-
-REM ** THE FIX: A clean call to our new, intelligent wrapper. **
 call .\scripts\sclaude.bat "Carefully read the file 'update_instructions.txt' and execute ALL the actions it describes, in order."
 
 if %errorlevel% neq 0 (
