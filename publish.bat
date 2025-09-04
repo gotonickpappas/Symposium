@@ -1,41 +1,44 @@
 @echo off
+
 REM =================================================================
-REM ==       Publishes The Symposium to GitHub and Google Drive    ==
+REM ==           Symposium Project Publishing Script             ==
+REM ==          (v1.1 - With Progress Indicators)                ==
 REM =================================================================
 
-REM Change the current directory to the script's directory.
 cd /d "%~dp0"
 
-REM Prompt for a commit message
 echo.
+echo    +----------------------------------------------------+
+echo    ^|        Symposium Project Publishing Utility        ^|
+echo    +----------------------------------------------------+
+echo.
+
 set /p commitMessage="Enter a commit message for this update: "
-
-REM =================================================================
 echo.
-echo [STEP 1] Pushing changes to GitHub...
 
-REM Add all changes to the staging area
+REM --- STEP 1: Push to GitHub ---
+echo [STEP 1/2] PUSHING CHANGES TO GITHUB
+echo -----------------------------------------------------------------
+echo   -> Adding all changes to the staging area...
 git add .
-
-REM Commit the changes with the provided message
+echo   -> Committing changes with message: "%commitMessage%"
 git commit -m "%commitMessage%"
-
-REM Push the commit to the 'main' branch on the remote 'origin'
+echo   -> Pushing commit to the 'main' branch on 'origin'...
 git push origin main
-
+echo [STEP 1/2] COMPLETE
 echo.
-echo GitHub push complete.
-echo =================================================================
-echo.
-echo [STEP 2] Syncing project to Google Drive...
-echo Excluding .env, .git, __pycache__, and symposium_env...
 
+REM --- STEP 2: Sync to Google Drive ---
+echo [STEP 2/2] SYNCING PROJECT TO GOOGLE DRIVE
+echo -----------------------------------------------------------------
+echo   -> Excluding: .env, .git, __pycache__, symposium_env
 rclone sync . "gdrive:Symposium" --exclude "/symposium_env/**" --exclude "/.git/**" --exclude "/__pycache__/**" --exclude ".env" --progress
+echo [STEP 2/2] COMPLETE
+echo.
 
 echo.
-echo Google Drive sync complete.
-echo =================================================================
+echo    +----------------------------------------------------+
+echo    ^|      PUBLISH COMPLETE - CONTEXT IS NOW SHARED      ^|
+echo    +----------------------------------------------------+
 echo.
-echo          PUBLISH COMPLETE - CONTEXT IS NOW SHARED
-echo =================================================================
 pause

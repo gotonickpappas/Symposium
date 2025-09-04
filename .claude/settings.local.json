@@ -7,10 +7,12 @@
       "Bash(pandoc:*)",
       "Bash(public.bat)",
       "Bash(.public.bat)",
-      "Bash(move:*)",
-      "Bash(dir:*)"
+      "Bash(move:*)"
     ],
-    "deny": [],
+    "deny": [
+      "Bash(dir:*)",
+      "Bash(ls:*)"
+    ],
     "ask": []
   }
 }
