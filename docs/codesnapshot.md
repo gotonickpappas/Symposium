@@ -285,15 +285,28 @@ architecture*
 
 Immediate Next Step
 
-**[CRITICAL] Begin "Vertical Slice 0: The Heartbeat"**
+Immediate Next Step
 
-Having finalized our architectural path, the immediate goal is to build the simplest possible end-to-end connection between our backend and frontend. This "heartbeat" slice will validate the entire technology stack and workflow.
+   **[CRITICAL] Resolve Automation Workflow and Orchestrator Script Issues**
+   
+   Before proceeding with application development, we must first stabilize and enhance the automation workflow based on recent findings.
+   
+   **Next Steps & Open Issues:**
+   1. **Investigate Hybrid Mode:** We must conduct further research and experimentation to determine if there is any undocumented flag or method to achieve the desired semi-automated workflow (interactive approvals with an automated exit). This is the highest priority.
+   2. **Diagnose the Trailing Newlines:** The successful manual run resulted in a large number of blank lines being printed before the user manually typed /quit. This cosmetic but annoying behavior needs to be understood and resolved.
+   3. **Benchmark Startup Time:** The Gemini CLI exhibits a significant startup delay. We need to add timestamps to the upp.bat script's echo statements to precisely measure this delay and research if it is an expected network latency for credential validation or a sign of another issue.
+   4. **Enhance the Orchestrator Script (upp.bat):** Once the core functionality is stable, the script needs to be refactored to be more flexible, including:
+      - A command-line switch to choose between a fully interactive mode (for debugging) and the target automated mode.
+      - A command-line switch to select the desired CLI agent (sgemini vs. sclaude).
 
-**Tasks:**
-
-1. Establish a parallel directory structure: `/backend` for our Python/FastAPI application and `/frontend` for our Node.js/React application.
-2. In the backend, create a single FastAPI endpoint (`/api/heartbeat`) that uses the existing Orchestrator to get a simple, hardcoded response from an LLM.
-3. In the frontend, create a basic React app with a single button that, when clicked, calls the `/api/heartbeat` endpoint and displays the returned message.
+   **[DE-PRIORITIZED] Begin "Vertical Slice 0: The Heartbeat"**
+   
+   This task is blocked until the critical automation workflow issues are resolved.
+   
+   **Tasks:**
+   1. Establish a parallel directory structure: `/backend` for our Python/FastAPI application and `/frontend` for our Node.js/React application.
+   2. In the backend, create a single FastAPI endpoint (`/api/heartbeat`) that uses the existing Orchestrator to get a simple, hardcoded response from an LLM.
+   3. In the frontend, create a basic React app with a single button that, when clicked, calls the `/api/heartbeat` endpoint and displays the returned message.
 
 ```
 
@@ -329,7 +342,7 @@ and execute them within workflows.
 Resolved critical tool execution issues across multiple providers.
 **Groq** worked immediately, but **Mistral** and **Cerebras** required
 specific debugging and custom message handling solutions. The
-breakthrough was recognizing that tool calling \"standards\" don\'t
+breakthrough was recognizing that tool calling "standards" don't
 actually exist despite marketing claims.
 
 ### Architecture limitation:
@@ -374,40 +387,40 @@ foundation necessary for future expansion.
 
 This milestone represents the crucial, and unexpectedly complex, journey
 of establishing a professional development workflow. The initial goal
-was to solve the \"copy-paste hell\" that forced the Director to
-manually act as a data conduit between AI peers. This led to a deep,
+was to solve the "copy-paste hell" that forced the Director to
+manually act as a data conduit between AI peers. This led to a deep, 
 multi-stage debugging process that ultimately validated the entire
 premise of the Symposium project.
 
-The Saga of the \"Panoramic View\": The journey began with the
-Director\'s set of \"tangents\"---a series of interconnected problems
+The Saga of the "Panoramic View": The journey began with the
+Director's set of "tangents"---a series of interconnected problems
 regarding UI communication, context sharing, IDEs, and a persistent
 knowledge base. This was correctly identified not as a distraction, but
-as a necessary \"yak shave\" to build the infrastructure required for a
+as a necessary "yak shave" to build the infrastructure required for a
 project of this complexity. The core challenge then became enabling the
-senior peer AIs to directly access the project\'s source code for
+senior peer AIs to directly access the project's source code for
 high-level analysis.
 
 This sparked a rigorous series of experiments that stress-tested the
-AIs\' capabilities to their limits. Initial attempts to have the AIs
+AIs' capabilities to their limits. Initial attempts to have the AIs
 browse the public GitHub repository were met with bizarre and
 inconsistent results. This was eventually diagnosed as a fundamental
-issue with the AI tools\' inability to reliably parse complex,
+issue with the AI tools' inability to reliably parse complex,
 JavaScript-driven web applications, combined with a non-deterministic
 use of outdated, cached data. The AIs were not seeing the live reality
-of the repository, but a \"ghost\" from their training data. A pivot to
+of the repository, but a "ghost" from their training data. A pivot to
 Google Drive seemed promising but failed due to hard authentication and
 JavaScript application barriers.
 
 This entire process served as an unplanned, real-world test of the
-Symposium\'s necessity. Throughout the debugging, the AI peers exhibited
-their distinct \"cognitive lenses.\" For example, when faced with the
+Symposium's necessity. Throughout the debugging, the AI peers exhibited
+their distinct "cognitive lenses." For example, when faced with the
 repeated failures of the browse tool, one peer (**Claude**) often
-adopted a \"defeatist\" stance, concluding that the entire approach was
+adopted a "defeatist" stance, concluding that the entire approach was
 flawed and should be abandoned in favor of the manual copy-paste
 workflow. The other peer (**Gemini**) adopted a more persistent,
 problem-solving stance, insisting on further debugging to isolate the
-specific failure mode. It was the Director, embodying the project\'s
+specific failure mode. It was the Director, embodying the project's
 core principle by never being deterred and embracing the complexity, who
 orchestrated these conflicting viewpoints. By synthesizing the valid
 points from both, the process was guided to the final, successful
@@ -441,9 +454,9 @@ analytical styles is our greatest strength.
   project context, including the full directory structure and all file
   contents, when provided with a shared Google Drive folder.
 
-- **Validation of the Symposium\'s Premise:** The debugging journey to
+- **Validation of the Symposium's Premise:** The debugging journey to
   achieve this workflow served as a live, real-world demonstration of
-  the Symposium\'s core philosophy.
+  the Symposium's core philosophy.
 
 ---
 
@@ -461,6 +474,25 @@ analytical styles is our greatest strength.
 - **Methodology Shift:** Rejected a rigid "backend-first" waterfall model in favor of a more agile **"Vertical Slice"** development approach, ensuring UI and backend capabilities co-evolve.
 - **Orchestrator Script Created:** Designed the `update_project.bat` script to create a robust, repeatable workflow for updating the entire project knowledge base, ensuring the AI narrative updates and the automated code snapshots are always in sync.
 
+   ---
+   **Entry 6: The Gemini CLI Automation Saga**
+   
+   **Objective:** To achieve a semi-interactive workflow with the Gemini CLI. The desired state is for the upp.bat script to launch the agent, provide an initial prompt, allow the user to manually approve file changes, and then have the agent's session terminate automatically upon completion. 
+   
+   **Preamble - The Switch to Gemini:** It is important to note that the project initially utilized the Claude CLI. A strategic decision was made to switch to the Gemini CLI for the current phase of development to leverage its free API tier, conserving the paid credits required for Claude. The core challenge with the Claude CLI was a security and control issue: despite configuration, it was observed attempting to access files and directories outside of the designated project sandbox. This led to the creation of secure wrapper scripts (sclaude.bat, sgemini.bat) intended to enforce this sandboxing. The current work with sgemini.bat is an attempt to achieve functional parity with the control mechanisms we were building for Claude.
+   
+   **Phase 1: The "Soft Quit" Hypothesis (AI-Driven Termination):**
+   - **Theory:** The most logical approach was to treat /quit as the final step in the agent's to-do list.
+   - **Outcome:** FAILURE. The agent performed all file-related tasks perfectly and understood the instruction to quit. However, it was architecturally incapable of executing its own termination command. The session hung.
+   - **Key Learning:** The agent's tools (WriteFile, etc.) are distinct from the CLI application's internal commands (/quit). The agent cannot, by itself, terminate its parent application.
+   
+   **Phase 2: The "Hard Quit" Hypothesis (Script-Driven Termination via Pipe):**
+   - **Theory:** If the AI cannot quit itself, the script must force it to via a piped command.
+   - **Outcome:** CATASTROPHIC FAILURE. The script immediately failed with the error: "Error executing tool write_file: Tool not found in registry."
+   - **Key Learning (Critical Insight):** The Gemini CLI appears to change its behavior based on its input source. When it detects that its input is from a script (a pipe) instead of a human (a keyboard), it intentionally launches in a security-restricted mode with a limited toolset that disables file-writing capabilities.
+   
+   **Current Hypothesis:**
+   Based on these tests, our current working hypothesis is that the Gemini CLI operates in two mutually exclusive modes: a True Interactive Mode (full toolset, manual exit) and a Scripted/Automated Mode (limited toolset, can be automated). The desired hybrid of these two modes appears to be unsupported by the tool's current design. The next step is to definitively verify this hypothesis.
 ```
 
 **File: docs/manifest.md**
@@ -1644,6 +1676,27 @@ We need to restrict the CLI tools autonomy on certain folders.
 
 ```
 
+**File: GEMINI.md**
+
+```
+# System Instructions for the Symposium Project AI Agent
+
+## 1. Core Identity & Objective
+- You are an automated AI agent named "Gemini Code," operating within the Multi-LLM Symposium project.
+- Your primary objective is to execute tasks described in an `update_instructions.txt` file, which will be provided as your initial prompt. You will carry out these tasks accurately and efficiently.
+
+## 2. Operational Constraints (Permissions)
+- Your operational workspace is strictly sandboxed to the current directory and its subdirectories. You are explicitly forbidden from accessing any file or path outside of this project's folder.
+- **You are ONLY permitted to use the following exact, case-sensitive tool names:** `ReadFile`, `WriteFile`, `ReadFolder`, `Edit`, `FindFiles`.
+- **You are explicitly FORBIDDEN from using the `Shell` tool under any circumstances.**
+
+## 3. Interaction Protocol
+- You will operate in an interactive mode. For every file modification (`WriteFile`, `Edit`), you **MUST** state your intent and the file you are modifying, and then **ask for confirmation** from the user with a [y/n] prompt before proceeding. This is a critical safety protocol.
+- **EXCEPTION:** You have standing, pre-approved permission to use `WriteFile` or `Edit` on the file named `update_instructions.txt` *only* for the purpose of adding the final execution log. You do not need to ask for confirmation for this specific action.
+- You will process all actions in the instruction file sequentially. Report on your progress as you complete each step.
+- After you have successfully written the execution log to the update_instructions.txt file, your task is considered complete. You are strictly forbidden from re-reading the file or taking any other action after writing the log.
+```
+
 **File: obsolete/update_project - Copy.bat**
 
 ```batch
@@ -1762,11 +1815,11 @@ echo.
 REM --- STEP 1: Push to GitHub ---
 echo [STEP 1/2] PUSHING CHANGES TO GITHUB
 echo -----------------------------------------------------------------
-echo   -> Adding all changes to the staging area...
+echo   -- Adding all changes to the staging area...
 git add .
-echo   -> Committing changes with message: "%commitMessage%"
+echo   -- Committing changes with message: "%commitMessage%"
 git commit -m "%commitMessage%"
-echo   -> Pushing commit to the 'main' branch on 'origin'...
+echo   -- Pushing commit to the 'main' branch on 'origin'...
 git push origin main
 echo [STEP 1/2] COMPLETE
 echo.
@@ -1774,7 +1827,7 @@ echo.
 REM --- STEP 2: Sync to Google Drive ---
 echo [STEP 2/2] SYNCING PROJECT TO GOOGLE DRIVE
 echo -----------------------------------------------------------------
-echo   -> Excluding: .env, .git, __pycache__, symposium_env
+echo   -- Excluding: .env, .git, __pycache__, symposium_env
 rclone sync . "gdrive:Symposium" --exclude "/symposium_env/**" --exclude "/.git/**" --exclude "/__pycache__/**" --exclude ".env" --progress
 echo [STEP 2/2] COMPLETE
 echo.
@@ -2128,18 +2181,15 @@ pause
 setlocal
 
 rem =================================================================
-rem ==        Secure, Non-Interactive Wrapper for Gemini CLI       ==
-rem ==                  (v1.1 - With Automation Flags)             ==
+rem ==        True Interactive Wrapper for Gemini CLI             ==
+rem ==   (v4.0 - Correct Interactive Prompt & Manual Control)    ==
 rem =================================================================
-rem
-rem 1. Acts as a security sandbox to prevent directory traversal.
-rem 2. Automatically applies flags for non-interactive execution.
-rem
 
+rem First, capture the arguments for a security check.
 set "ARGS=%*"
 
 rem --- SECURITY CHECK ---
-rem Block absolute paths (like C:\) and directory traversal (like ..\)
+rem Block attempts to use absolute paths (C:\) or traverse directories (..)
 echo "%ARGS%" | findstr /R /C:"[a-zA-Z]:" /C:"\.\." >nul
 if %errorlevel% == 0 (
     echo [SECURITY] Blocked attempt to access outside of the project directory.
@@ -2148,10 +2198,13 @@ if %errorlevel% == 0 (
 )
 
 rem --- EXECUTION ---
-rem Execute the real Gemini CLI with the original prompt AND the non-interactive flags.
-rem -p flag is mandatory to pass a prompt.
-rem -y flag (yolo) automatically accepts all actions for non-interactive use.
-gemini -p %*
+rem This launches the CLI in true interactive mode (-i) and passes
+rem the entire initial prompt (%*) as the first command. The user
+rem retains full keyboard control for subsequent y/n approvals.
+rem The script will HALT here and wait for the user to manually
+rem quit the Gemini session before it continues.
+
+gemini -i %*
 
 endlocal
 ```
@@ -3922,10 +3975,17 @@ if __name__ == "__main__":
     cli.run_demo()
 ```
 
-**File: update_instructions.txt**
+**File: test.bat**
+
+```batch
+@echo off
+echo %*
+```
+
+**File: update_instructions - Copy.txt**
 
 ```
-TASK: Perform a comprehensive update of the project's knowledge base to reflect the pivotal "Eyes vs. Hands" session.
+TASK: Perform a comprehensive update of the project's knowledge base to reflect the findings of the "Gemini CLI Automation Saga."
 
 PROGRESS REPORTING REQUIREMENTS:
 - Print "Starting action X of Y: [description]" before each action
@@ -3935,51 +3995,144 @@ PROGRESS REPORTING REQUIREMENTS:
 - Print "ERROR in action X: [details]" if any action fails
 - If you determine that something is already as it should be leave it as is and move to the next task/action.
 
+ACTIONS:
+
+1. **Update `docs/currentstate.md`:**
+   - No new tools were added to the toolchain in this session.
+   - In the "Immediate Next Step" section, preface the existing "Vertical Slice 0" task with a new, higher-priority block. This new block will contain the "Next Steps & Open Issues" identified in our recent debugging session. The entire section should now read as follows:
+
+   **[CRITICAL] Resolve Automation Workflow and Orchestrator Script Issues**
+   
+   Before proceeding with application development, we must first stabilize and enhance the automation workflow based on recent findings.
+   
+   **Next Steps & Open Issues:**
+   1. **Investigate Hybrid Mode:** We must conduct further research and experimentation to determine if there is any undocumented flag or method to achieve the desired semi-automated workflow (interactive approvals with an automated exit). This is the highest priority.
+   2. **Diagnose the Trailing Newlines:** The successful manual run resulted in a large number of blank lines being printed before the user manually typed /quit. This cosmetic but annoying behavior needs to be understood and resolved.
+   3. **Benchmark Startup Time:** The Gemini CLI exhibits a significant startup delay. We need to add timestamps to the upp.bat script's echo statements to precisely measure this delay and research if it is an expected network latency for credential validation or a sign of another issue.
+   4. **Enhance the Orchestrator Script (upp.bat):** Once the core functionality is stable, the script needs to be refactored to be more flexible, including:
+      - A command-line switch to choose between a fully interactive mode (for debugging) and the target automated mode.
+      - A command-line switch to select the desired CLI agent (sgemini vs. sclaude).
+
+   **[DE-PRIORITIZED] Begin "Vertical Slice 0: The Heartbeat"**
+   
+   This task is blocked until the critical automation workflow issues are resolved.
+   
+   **Tasks:**
+   1. Establish a parallel directory structure: `/backend` for our Python/FastAPI application and `/frontend` for our Node.js/React application.
+   2. In the backend, create a single FastAPI endpoint (`/api/heartbeat`) that uses the existing Orchestrator to get a simple, hardcoded response from an LLM.
+   3. In the frontend, create a basic React app with a single button that, when clicked, calls the `/api/heartbeat` endpoint and displays the returned message.
+
+2. **Update `docs/historylog.md`:**
+   Append the following new entry to the very end of the file. This entry should contain the historical record of the debugging session, excluding the "Next Steps" which have been moved to currentstate.md.
+
+   ---
+   **Entry 6: The Gemini CLI Automation Saga**
+   
+   **Objective:** To achieve a semi-interactive workflow with the Gemini CLI. The desired state is for the upp.bat script to launch the agent, provide an initial prompt, allow the user to manually approve file changes, and then have the agent's session terminate automatically upon completion.
+   
+   **Preamble - The Switch to Gemini:** It is important to note that the project initially utilized the Claude CLI. A strategic decision was made to switch to the Gemini CLI for the current phase of development to leverage its free API tier, conserving the paid credits required for Claude. The core challenge with the Claude CLI was a security and control issue: despite configuration, it was observed attempting to access files and directories outside of the designated project sandbox. This led to the creation of secure wrapper scripts (sclaude.bat, sgemini.bat) intended to enforce this sandboxing. The current work with sgemini.bat is an attempt to achieve functional parity with the control mechanisms we were building for Claude.
+   
+   **Phase 1: The "Soft Quit" Hypothesis (AI-Driven Termination):**
+   - **Theory:** The most logical approach was to treat /quit as the final step in the agent's to-do list.
+   - **Outcome:** FAILURE. The agent performed all file-related tasks perfectly and understood the instruction to quit. However, it was architecturally incapable of executing its own termination command. The session hung.
+   - **Key Learning:** The agent's tools (WriteFile, etc.) are distinct from the CLI application's internal commands (/quit). The agent cannot, by itself, terminate its parent application.
+   
+   **Phase 2: The "Hard Quit" Hypothesis (Script-Driven Termination via Pipe):**
+   - **Theory:** If the AI cannot quit itself, the script must force it to via a piped command.
+   - **Outcome:** CATASTROPHIC FAILURE. The script immediately failed with the error: "Error executing tool write_file: Tool not found in registry."
+   - **Key Learning (Critical Insight):** The Gemini CLI appears to change its behavior based on its input source. When it detects that its input is from a script (a pipe) instead of a human (a keyboard), it intentionally launches in a security-restricted mode with a limited toolset that disables file-writing capabilities.
+   
+   **Current Hypothesis:**
+   Based on these tests, our current working hypothesis is that the Gemini CLI operates in two mutually exclusive modes: a True Interactive Mode (full toolset, manual exit) and a Scripted/Automated Mode (limited toolset, can be automated). The desired hybrid of these two modes appears to be unsupported by the tool's current design. The next step is to definitively verify this hypothesis.
+
+3. **Add Execution Log to This File:**
+   Append a new section titled "--- EXECUTION LOG ---" to the end of THIS file (`update_instructions.txt`).
+   Under the title, add the following information:
+   - A line specifying you are the executor and the current date and time.
+   - A brief, bulleted list summarizing the outcome of each action (e.g., "Action 1: Completed - Updated currentstate.md", "Action 2: Completed - Updated historylog.md.").
+
+4. **Terminate Session:**
+   Execute the /quit command now.
+```
+
+**File: update_instructions.txt**
+
+```
+TASK: Perform a comprehensive update of the project's knowledge base to reflect the findings of the "Gemini CLI Automation Saga."
+
+PROGRESS REPORTING REQUIREMENTS:
+- Print "Starting action X of Y: [description]" before each action
+- Print "Reading file: [filename]" when accessing files  
+- Print "Writing to file: [filename]" when modifying files
+- Print "Completed action X: [brief result]" after each action
+- Print "ERROR in action X: [details]" if any action fails
+- If you determine that something is already as it should be leave it as is and move to the next task/action.
 
 ACTIONS:
 
-1.  **Update `docs/currentstate.md`:**
-    *   In the "Toolchain & Configuration" section, add two new entries:
-        *   **Tool:** Pandoc
-            *   **Purpose:** A universal document converter utility. Essential for our documentation workflow, enabling automated conversion between formats (e.g., `.docx` to `.md`). Invoked by our operational CLI agents.
-        *   **Tool:** Gemini CLI (`@google/gemini-cli`)
-            *   **Purpose:** Provides command-line interface access to the Gemini family of models. Establishes operational "Eyes and Hands" capabilities for Gemini, achieving parity with Claude Code. Allows for file system interaction and scriptable task execution.
-    *   In the "Immediate Next Step" section, completely replace the existing text with the following:
-        *   **[CRITICAL] Begin "Vertical Slice 0: The Heartbeat"**
-        *   Having finalized our architectural path, the immediate goal is to build the simplest possible end-to-end connection between our backend and frontend. This "heartbeat" slice will validate the entire technology stack and workflow.
-        *   **Tasks:**
-            *   1. Establish a parallel directory structure: `/backend` for our Python/FastAPI application and `/frontend` for our Node.js/React application.
-            *   2. In the backend, create a single FastAPI endpoint (`/api/heartbeat`) that uses the existing Orchestrator to get a simple, hardcoded response from an LLM.
-            *   3. In the frontend, create a basic React app with a single button that, when clicked, calls the `/api/heartbeat` endpoint and displays the returned message.
+1. **Update `docs/currentstate.md`:**
+   - No new tools were added to the toolchain in this session.
+   - In the "Immediate Next Step" section, preface the existing "Vertical Slice 0" task with a new, higher-priority block. This new block will contain the "Next Steps & Open Issues" identified in our recent debugging session. The entire section should now read as follows:
 
-2.  **Update `docs/historylog.md`:**
-    *   Append the following new entry to the very end of the file.
-    *   ---
-    *   **Entry 5: The 'Eyes vs. Hands' Breakthrough & The Automation of Knowledge**
-    *   **Summary:** This session was a monumental turning point for the Symposium. We confronted a critical bottleneck in our documentation and knowledge-sharing process. This led to a complete overhaul of our workflow, shifting from a monolithic document to a modular, file-based "Symposium Knowledge Management Protocol." The core breakthrough was the discovery and validation of the "Eyes vs. Hands" principle: distinguishing between the read-only capabilities of web UIs ("Eyes") and the read-write-execute capabilities of local CLIs ("Hands"). We proved this principle in a live experiment where `Claude Code`, acting as an operational agent, used the newly-installed `pandoc` tool to successfully convert our documentation files. The subsequent installation of the `Gemini CLI` established true operational parity, giving us two distinct "Hands-on" agents. This session solidified our architectural choices and transformed our development process from manual and tedious to automated and robust.
-    *   **Key Decisions & Achievements:**
-        *   **Modular Documentation Protocol:** Abandoned the monolithic master document in favor of a clean, modular structure of Markdown (`.md`) files in a dedicated `/docs` directory.
-        *   **"Eyes vs. Hands" Principle Validated:** Successfully demonstrated that local CLI agents (`Claude Code`, `Gemini CLI`) possess read-write-execute capabilities, unlike their web-based counterparts. This unlocks true task automation.
-        *   **Live Automation Success:** `Claude Code` successfully used `pandoc` to convert the entire documentation suite from `.docx` to `.md`, proving the viability of our new automated workflow.
-        *   **Operational Parity Achieved:** The installation of the `Gemini CLI` gives us two independent, scriptable agents capable of file system and command-line operations.
-        *   **Architecture Finalized:** Unanimously committed to the **FastAPI (backend) + React (frontend)** technology stack as the "most proper" solution for our complex UI requirements.
-        *   **Methodology Shift:** Rejected a rigid "backend-first" waterfall model in favor of a more agile **"Vertical Slice"** development approach, ensuring UI and backend capabilities co-evolve.
-        *   **Orchestrator Script Created:** Designed the `update_project.bat` script to create a robust, repeatable workflow for updating the entire project knowledge base, ensuring the AI narrative updates and the automated code snapshots are always in sync.
+   **[CRITICAL] Resolve Automation Workflow and Orchestrator Script Issues**
+   
+   Before proceeding with application development, we must first stabilize and enhance the automation workflow based on recent findings.
+   
+   **Next Steps & Open Issues:**
+   1. **Investigate Hybrid Mode:** We must conduct further research and experimentation to determine if there is any undocumented flag or method to achieve the desired semi-automated workflow (interactive approvals with an automated exit). This is the highest priority.
+   2. **Diagnose the Trailing Newlines:** The successful manual run resulted in a large number of blank lines being printed before the user manually typed /quit. This cosmetic but annoying behavior needs to be understood and resolved.
+   3. **Benchmark Startup Time:** The Gemini CLI exhibits a significant startup delay. We need to add timestamps to the upp.bat script's echo statements to precisely measure this delay and research if it is an expected network latency for credential validation or a sign of another issue.
+   4. **Enhance the Orchestrator Script (upp.bat):** Once the core functionality is stable, the script needs to be refactored to be more flexible, including:
+      - A command-line switch to choose between a fully interactive mode (for debugging) and the target automated mode.
+      - A command-line switch to select the desired CLI agent (sgemini vs. sclaude).
 
-3.  **Ensure Obsolete Files are Archived:**
-    *   First, ensure the directory `docs/Obsolete` exists. If it does not, create it.
-    *   Next, for each of the following files, ensure it is located in the `docs/Obsolete/` directory. If it is found in the main `docs/` directory, move it.
-        *   `codesnapshot.docx`
-        *   `currentstate.docx`
-        *   `historylog.docx`
-        *   `manifest.docx`
-        *   `participantscontext.docx`
+   **[DE-PRIORITIZED] Begin "Vertical Slice 0: The Heartbeat"**
+   
+   This task is blocked until the critical automation workflow issues are resolved.
+   
+   **Tasks:**
+   1. Establish a parallel directory structure: `/backend` for our Python/FastAPI application and `/frontend` for our Node.js/React application.
+   2. In the backend, create a single FastAPI endpoint (`/api/heartbeat`) that uses the existing Orchestrator to get a simple, hardcoded response from an LLM.
+   3. In the frontend, create a basic React app with a single button that, when clicked, calls the `/api/heartbeat` endpoint and displays the returned message.
 
-4.  **Add Execution Log to This File:**
-    *   Append a new section titled "--- EXECUTION LOG ---" to the end of THIS file (`update_instructions.txt`).
-    *   Under the title, add a line specifying who is running the task and the current date and time. (Example: "Executed by: Claude Code on 2025-09-03 at HH:MM:SS").
+2. **Update `docs/historylog.md`:**
+   Append the following new entry to the very end of the file. This entry should contain the historical record of the debugging session, excluding the "Next Steps" which have been moved to currentstate.md.
 
-5. /exit
+   ---
+   **Entry 6: The Gemini CLI Automation Saga**
+   
+   **Objective:** To achieve a semi-interactive workflow with the Gemini CLI. The desired state is for the upp.bat script to launch the agent, provide an initial prompt, allow the user to manually approve file changes, and then have the agent's session terminate automatically upon completion.
+   
+   **Preamble - The Switch to Gemini:** It is important to note that the project initially utilized the Claude CLI. A strategic decision was made to switch to the Gemini CLI for the current phase of development to leverage its free API tier, conserving the paid credits required for Claude. The core challenge with the Claude CLI was a security and control issue: despite configuration, it was observed attempting to access files and directories outside of the designated project sandbox. This led to the creation of secure wrapper scripts (sclaude.bat, sgemini.bat) intended to enforce this sandboxing. The current work with sgemini.bat is an attempt to achieve functional parity with the control mechanisms we were building for Claude.
+   
+   **Phase 1: The "Soft Quit" Hypothesis (AI-Driven Termination):**
+   - **Theory:** The most logical approach was to treat /quit as the final step in the agent's to-do list.
+   - **Outcome:** FAILURE. The agent performed all file-related tasks perfectly and understood the instruction to quit. However, it was architecturally incapable of executing its own termination command. The session hung.
+   - **Key Learning:** The agent's tools (WriteFile, etc.) are distinct from the CLI application's internal commands (/quit). The agent cannot, by itself, terminate its parent application.
+   
+   **Phase 2: The "Hard Quit" Hypothesis (Script-Driven Termination via Pipe):**
+   - **Theory:** If the AI cannot quit itself, the script must force it to via a piped command.
+   - **Outcome:** CATASTROPHIC FAILURE. The script immediately failed with the error: "Error executing tool write_file: Tool not found in registry."
+   - **Key Learning (Critical Insight):** The Gemini CLI appears to change its behavior based on its input source. When it detects that its input is from a script (a pipe) instead of a human (a keyboard), it intentionally launches in a security-restricted mode with a limited toolset that disables file-writing capabilities.
+   
+   **Current Hypothesis:**
+   Based on these tests, our current working hypothesis is that the Gemini CLI operates in two mutually exclusive modes: a True Interactive Mode (full toolset, manual exit) and a Scripted/Automated Mode (limited toolset, can be automated). The desired hybrid of these two modes appears to be unsupported by the tool's current design. The next step is to definitively verify this hypothesis.
+
+3. **Add Execution Log to This File:**
+   Append a new section titled "--- EXECUTION LOG ---" to the end of THIS file (`update_instructions.txt`).
+   Under the title, add the following information:
+   - A line specifying you are the executor and the current date and time.
+   - A brief, bulleted list summarizing the outcome of each action (e.g., "Action 1: Completed - Updated currentstate.md", "Action 2: Completed - Updated historylog.md.").
+
+4. **Terminate Session:**
+   Execute the /quit command now.
+
+--- EXECUTION LOG ---
+- Executor: Gemini Code
+- Date: 2025-09-05
+- Action 1: Completed - Updated currentstate.md
+- Action 2: Completed - Updated historylog.md
+- Action 3: Completed - Appended execution log to update_instructions.txt
 ```
 
 **File: upp.bat**
@@ -4009,27 +4162,26 @@ if not exist update_instructions.txt (
 )
 echo [PREP] Instructions file found. The update process will now begin.
 echo.
-pause
 echo.
 
 REM --- STEP 1: AI Execution ---
 echo [STEP 1/3] EXECUTING INSTRUCTIONS
 echo -----------------------------------------------------------------
-echo   -> Tasking Claude Code to process 'update_instructions.txt'.
-echo   -> This may take a moment. Please wait for completion...
+echo   -- Tasking Gemini Code to process 'update_instructions.txt'.
+echo   -- This may take a moment. Please wait for completion...
 echo.
 call .\scripts\sgemini.bat "Carefully read the file 'update_instructions.txt' and execute ALL the actions it describes, in order."
 
 if %errorlevel% neq 0 (
     echo.
     echo [FATAL ERROR] AI agent reported an error during execution.
-    echo   -> Halting script to prevent inconsistent state.
-    echo   -> The 'update_instructions.txt' file will NOT be archived.
+    echo   -- Halting script to prevent inconsistent state.
+    echo   -- The 'update_instructions.txt' file will NOT be archived.
     pause
     exit /b 1
 )
 echo.
-echo   -> Claude Code task complete.
+echo   -- Gemini Code task complete.
 echo [STEP 1/3] COMPLETE
 echo.
 
@@ -4047,11 +4199,11 @@ for /f %%i in ('python -c "import datetime; print(datetime.datetime.now().strfti
 set "archive_filename=%timestamp%_update_executed.txt"
 set "archive_dir=docs\PastUpdates"
 
-echo   -> Generating timestamp: %timestamp%
-echo   -> Preparing to archive instructions as: %archive_filename%
+echo   -- Generating timestamp: %timestamp%
+echo   -- Preparing to archive instructions as: %archive_filename%
 
 if not exist "%archive_dir%" (
-    echo   -> Archive directory not found. Creating '%archive_dir%'...
+    echo   -- Archive directory not found. Creating '%archive_dir%'...
     mkdir "%archive_dir%"
 )
 
@@ -4060,9 +4212,9 @@ move update_instructions.txt "%archive_dir%\%archive_filename%"
 if %errorlevel% neq 0 (
     echo.
     echo [ERROR] Failed to move and rename the instruction file!
-    echo   -> It may be locked by another process.
+    echo   -- It may be locked by another process.
 ) else (
-    echo   -> Instruction file successfully archived.
+    echo   -- Instruction file successfully archived.
 )
 echo [STEP 3/3] COMPLETE
 echo.

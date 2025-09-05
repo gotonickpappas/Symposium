@@ -189,12 +189,25 @@ architecture*
 
 Immediate Next Step
 
-**[CRITICAL] Begin "Vertical Slice 0: The Heartbeat"**
+Immediate Next Step
 
-Having finalized our architectural path, the immediate goal is to build the simplest possible end-to-end connection between our backend and frontend. This "heartbeat" slice will validate the entire technology stack and workflow.
+   **[CRITICAL] Resolve Automation Workflow and Orchestrator Script Issues**
+   
+   Before proceeding with application development, we must first stabilize and enhance the automation workflow based on recent findings.
+   
+   **Next Steps & Open Issues:**
+   1. **Investigate Hybrid Mode:** We must conduct further research and experimentation to determine if there is any undocumented flag or method to achieve the desired semi-automated workflow (interactive approvals with an automated exit). This is the highest priority.
+   2. **Diagnose the Trailing Newlines:** The successful manual run resulted in a large number of blank lines being printed before the user manually typed /quit. This cosmetic but annoying behavior needs to be understood and resolved.
+   3. **Benchmark Startup Time:** The Gemini CLI exhibits a significant startup delay. We need to add timestamps to the upp.bat script's echo statements to precisely measure this delay and research if it is an expected network latency for credential validation or a sign of another issue.
+   4. **Enhance the Orchestrator Script (upp.bat):** Once the core functionality is stable, the script needs to be refactored to be more flexible, including:
+      - A command-line switch to choose between a fully interactive mode (for debugging) and the target automated mode.
+      - A command-line switch to select the desired CLI agent (sgemini vs. sclaude).
 
-**Tasks:**
-
-1. Establish a parallel directory structure: `/backend` for our Python/FastAPI application and `/frontend` for our Node.js/React application.
-2. In the backend, create a single FastAPI endpoint (`/api/heartbeat`) that uses the existing Orchestrator to get a simple, hardcoded response from an LLM.
-3. In the frontend, create a basic React app with a single button that, when clicked, calls the `/api/heartbeat` endpoint and displays the returned message.
+   **[DE-PRIORITIZED] Begin "Vertical Slice 0: The Heartbeat"**
+   
+   This task is blocked until the critical automation workflow issues are resolved.
+   
+   **Tasks:**
+   1. Establish a parallel directory structure: `/backend` for our Python/FastAPI application and `/frontend` for our Node.js/React application.
+   2. In the backend, create a single FastAPI endpoint (`/api/heartbeat`) that uses the existing Orchestrator to get a simple, hardcoded response from an LLM.
+   3. In the frontend, create a basic React app with a single button that, when clicked, calls the `/api/heartbeat` endpoint and displays the returned message.

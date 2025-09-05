@@ -22,27 +22,26 @@ if not exist update_instructions.txt (
 )
 echo [PREP] Instructions file found. The update process will now begin.
 echo.
-pause
 echo.
 
 REM --- STEP 1: AI Execution ---
 echo [STEP 1/3] EXECUTING INSTRUCTIONS
 echo -----------------------------------------------------------------
-echo   -> Tasking Claude Code to process 'update_instructions.txt'.
-echo   -> This may take a moment. Please wait for completion...
+echo   -- Tasking Gemini Code to process 'update_instructions.txt'.
+echo   -- This may take a moment. Please wait for completion...
 echo.
 call .\scripts\sgemini.bat "Carefully read the file 'update_instructions.txt' and execute ALL the actions it describes, in order."
 
 if %errorlevel% neq 0 (
     echo.
     echo [FATAL ERROR] AI agent reported an error during execution.
-    echo   -> Halting script to prevent inconsistent state.
-    echo   -> The 'update_instructions.txt' file will NOT be archived.
+    echo   -- Halting script to prevent inconsistent state.
+    echo   -- The 'update_instructions.txt' file will NOT be archived.
     pause
     exit /b 1
 )
 echo.
-echo   -> Claude Code task complete.
+echo   -- Gemini Code task complete.
 echo [STEP 1/3] COMPLETE
 echo.
 
@@ -60,11 +59,11 @@ for /f %%i in ('python -c "import datetime; print(datetime.datetime.now().strfti
 set "archive_filename=%timestamp%_update_executed.txt"
 set "archive_dir=docs\PastUpdates"
 
-echo   -> Generating timestamp: %timestamp%
-echo   -> Preparing to archive instructions as: %archive_filename%
+echo   -- Generating timestamp: %timestamp%
+echo   -- Preparing to archive instructions as: %archive_filename%
 
 if not exist "%archive_dir%" (
-    echo   -> Archive directory not found. Creating '%archive_dir%'...
+    echo   -- Archive directory not found. Creating '%archive_dir%'...
     mkdir "%archive_dir%"
 )
 
@@ -73,9 +72,9 @@ move update_instructions.txt "%archive_dir%\%archive_filename%"
 if %errorlevel% neq 0 (
     echo.
     echo [ERROR] Failed to move and rename the instruction file!
-    echo   -> It may be locked by another process.
+    echo   -- It may be locked by another process.
 ) else (
-    echo   -> Instruction file successfully archived.
+    echo   -- Instruction file successfully archived.
 )
 echo [STEP 3/3] COMPLETE
 echo.

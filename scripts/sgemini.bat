@@ -2,18 +2,15 @@
 setlocal
 
 rem =================================================================
-rem ==        Secure, Non-Interactive Wrapper for Gemini CLI       ==
-rem ==                  (v1.1 - With Automation Flags)             ==
+rem ==        True Interactive Wrapper for Gemini CLI             ==
+rem ==   (v4.0 - Correct Interactive Prompt & Manual Control)    ==
 rem =================================================================
-rem
-rem 1. Acts as a security sandbox to prevent directory traversal.
-rem 2. Automatically applies flags for non-interactive execution.
-rem
 
+rem First, capture the arguments for a security check.
 set "ARGS=%*"
 
 rem --- SECURITY CHECK ---
-rem Block absolute paths (like C:\) and directory traversal (like ..\)
+rem Block attempts to use absolute paths (C:\) or traverse directories (..)
 echo "%ARGS%" | findstr /R /C:"[a-zA-Z]:" /C:"\.\." >nul
 if %errorlevel% == 0 (
     echo [SECURITY] Blocked attempt to access outside of the project directory.
@@ -22,9 +19,12 @@ if %errorlevel% == 0 (
 )
 
 rem --- EXECUTION ---
-rem Execute the real Gemini CLI with the original prompt AND the non-interactive flags.
-rem -p flag is mandatory to pass a prompt.
-rem -y flag (yolo) automatically accepts all actions for non-interactive use.
-gemini -p %*
+rem This launches the CLI in true interactive mode (-i) and passes
+rem the entire initial prompt (%*) as the first command. The user
+rem retains full keyboard control for subsequent y/n approvals.
+rem The script will HALT here and wait for the user to manually
+rem quit the Gemini session before it continues.
+
+gemini -i %*
 
 endlocal

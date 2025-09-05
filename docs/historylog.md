@@ -27,7 +27,7 @@ and execute them within workflows.
 Resolved critical tool execution issues across multiple providers.
 **Groq** worked immediately, but **Mistral** and **Cerebras** required
 specific debugging and custom message handling solutions. The
-breakthrough was recognizing that tool calling \"standards\" don\'t
+breakthrough was recognizing that tool calling "standards" don't
 actually exist despite marketing claims.
 
 ### Architecture limitation:
@@ -72,40 +72,40 @@ foundation necessary for future expansion.
 
 This milestone represents the crucial, and unexpectedly complex, journey
 of establishing a professional development workflow. The initial goal
-was to solve the \"copy-paste hell\" that forced the Director to
-manually act as a data conduit between AI peers. This led to a deep,
+was to solve the "copy-paste hell" that forced the Director to
+manually act as a data conduit between AI peers. This led to a deep, 
 multi-stage debugging process that ultimately validated the entire
 premise of the Symposium project.
 
-The Saga of the \"Panoramic View\": The journey began with the
-Director\'s set of \"tangents\"---a series of interconnected problems
+The Saga of the "Panoramic View": The journey began with the
+Director's set of "tangents"---a series of interconnected problems
 regarding UI communication, context sharing, IDEs, and a persistent
 knowledge base. This was correctly identified not as a distraction, but
-as a necessary \"yak shave\" to build the infrastructure required for a
+as a necessary "yak shave" to build the infrastructure required for a
 project of this complexity. The core challenge then became enabling the
-senior peer AIs to directly access the project\'s source code for
+senior peer AIs to directly access the project's source code for
 high-level analysis.
 
 This sparked a rigorous series of experiments that stress-tested the
-AIs\' capabilities to their limits. Initial attempts to have the AIs
+AIs' capabilities to their limits. Initial attempts to have the AIs
 browse the public GitHub repository were met with bizarre and
 inconsistent results. This was eventually diagnosed as a fundamental
-issue with the AI tools\' inability to reliably parse complex,
+issue with the AI tools' inability to reliably parse complex,
 JavaScript-driven web applications, combined with a non-deterministic
 use of outdated, cached data. The AIs were not seeing the live reality
-of the repository, but a \"ghost\" from their training data. A pivot to
+of the repository, but a "ghost" from their training data. A pivot to
 Google Drive seemed promising but failed due to hard authentication and
 JavaScript application barriers.
 
 This entire process served as an unplanned, real-world test of the
-Symposium\'s necessity. Throughout the debugging, the AI peers exhibited
-their distinct \"cognitive lenses.\" For example, when faced with the
+Symposium's necessity. Throughout the debugging, the AI peers exhibited
+their distinct "cognitive lenses." For example, when faced with the
 repeated failures of the browse tool, one peer (**Claude**) often
-adopted a \"defeatist\" stance, concluding that the entire approach was
+adopted a "defeatist" stance, concluding that the entire approach was
 flawed and should be abandoned in favor of the manual copy-paste
 workflow. The other peer (**Gemini**) adopted a more persistent,
 problem-solving stance, insisting on further debugging to isolate the
-specific failure mode. It was the Director, embodying the project\'s
+specific failure mode. It was the Director, embodying the project's
 core principle by never being deterred and embracing the complexity, who
 orchestrated these conflicting viewpoints. By synthesizing the valid
 points from both, the process was guided to the final, successful
@@ -139,9 +139,9 @@ analytical styles is our greatest strength.
   project context, including the full directory structure and all file
   contents, when provided with a shared Google Drive folder.
 
-- **Validation of the Symposium\'s Premise:** The debugging journey to
+- **Validation of the Symposium's Premise:** The debugging journey to
   achieve this workflow served as a live, real-world demonstration of
-  the Symposium\'s core philosophy.
+  the Symposium's core philosophy.
 
 ---
 
@@ -158,3 +158,23 @@ analytical styles is our greatest strength.
 - **Architecture Finalized:** Unanimously committed to the **FastAPI (backend) + React (frontend)** technology stack as the "most proper" solution for our complex UI requirements.
 - **Methodology Shift:** Rejected a rigid "backend-first" waterfall model in favor of a more agile **"Vertical Slice"** development approach, ensuring UI and backend capabilities co-evolve.
 - **Orchestrator Script Created:** Designed the `update_project.bat` script to create a robust, repeatable workflow for updating the entire project knowledge base, ensuring the AI narrative updates and the automated code snapshots are always in sync.
+
+   ---
+   **Entry 6: The Gemini CLI Automation Saga**
+   
+   **Objective:** To achieve a semi-interactive workflow with the Gemini CLI. The desired state is for the upp.bat script to launch the agent, provide an initial prompt, allow the user to manually approve file changes, and then have the agent's session terminate automatically upon completion. 
+   
+   **Preamble - The Switch to Gemini:** It is important to note that the project initially utilized the Claude CLI. A strategic decision was made to switch to the Gemini CLI for the current phase of development to leverage its free API tier, conserving the paid credits required for Claude. The core challenge with the Claude CLI was a security and control issue: despite configuration, it was observed attempting to access files and directories outside of the designated project sandbox. This led to the creation of secure wrapper scripts (sclaude.bat, sgemini.bat) intended to enforce this sandboxing. The current work with sgemini.bat is an attempt to achieve functional parity with the control mechanisms we were building for Claude.
+   
+   **Phase 1: The "Soft Quit" Hypothesis (AI-Driven Termination):**
+   - **Theory:** The most logical approach was to treat /quit as the final step in the agent's to-do list.
+   - **Outcome:** FAILURE. The agent performed all file-related tasks perfectly and understood the instruction to quit. However, it was architecturally incapable of executing its own termination command. The session hung.
+   - **Key Learning:** The agent's tools (WriteFile, etc.) are distinct from the CLI application's internal commands (/quit). The agent cannot, by itself, terminate its parent application.
+   
+   **Phase 2: The "Hard Quit" Hypothesis (Script-Driven Termination via Pipe):**
+   - **Theory:** If the AI cannot quit itself, the script must force it to via a piped command.
+   - **Outcome:** CATASTROPHIC FAILURE. The script immediately failed with the error: "Error executing tool write_file: Tool not found in registry."
+   - **Key Learning (Critical Insight):** The Gemini CLI appears to change its behavior based on its input source. When it detects that its input is from a script (a pipe) instead of a human (a keyboard), it intentionally launches in a security-restricted mode with a limited toolset that disables file-writing capabilities.
+   
+   **Current Hypothesis:**
+   Based on these tests, our current working hypothesis is that the Gemini CLI operates in two mutually exclusive modes: a True Interactive Mode (full toolset, manual exit) and a Scripted/Automated Mode (limited toolset, can be automated). The desired hybrid of these two modes appears to be unsupported by the tool's current design. The next step is to definitively verify this hypothesis.
