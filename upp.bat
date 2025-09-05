@@ -82,7 +82,7 @@ echo.
 REM --- STEP 4: Publish Changes ---
 echo [STEP 4/4] INITIATING PUBLISH SCRIPT
 echo -----------------------------------------------------------------
-call publish.bat
+call publish.bat %*
 echo [STEP 4/4] COMPLETE
 echo.
 
@@ -91,4 +91,3 @@ echo    +----------------------------------------------------+
 echo    ^|      PROJECT KNOWLEDGE BASE IS NOW SYNCED          ^|
 echo    +----------------------------------------------------+
 echo.
-pause

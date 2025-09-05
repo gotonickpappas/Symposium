@@ -13,7 +13,8 @@ echo    ^|        Symposium Project Publishing Utility        ^|
 echo    +----------------------------------------------------+
 echo.
 
-set /p commitMessage="Enter a commit message for this update: "
+set "commitMessage=%~1"
+if not defined commitMessage set "commitMessage=Automated project update"
 echo.
 
 REM --- STEP 1: Push to GitHub ---
@@ -41,4 +42,3 @@ echo    +----------------------------------------------------+
 echo    ^|      PUBLISH COMPLETE - CONTEXT IS NOW SHARED      ^|
 echo    +----------------------------------------------------+
 echo.
-pause

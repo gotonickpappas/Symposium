@@ -1655,7 +1655,8 @@ echo    ^|        Symposium Project Publishing Utility        ^|
 echo    +----------------------------------------------------+
 echo.
 
-set /p commitMessage="Enter a commit message for this update: "
+set "commitMessage=%~1"
+if not defined commitMessage set "commitMessage=Automated project update"
 echo.
 
 REM --- STEP 1: Push to GitHub ---
@@ -1683,7 +1684,6 @@ echo    +----------------------------------------------------+
 echo    ^|      PUBLISH COMPLETE - CONTEXT IS NOW SHARED      ^|
 echo    +----------------------------------------------------+
 echo.
-pause
 ```
 
 **File: requirements.txt**
@@ -3971,12 +3971,14 @@ ACTIONS:
    - A brief, bulleted list summarizing the outcome of each action (e.g., "Action 1: Completed - Updated currentstate.md", "Action 2: Completed - Updated historylog.md.").
 
 4. **Terminate Session:**
-   Execute the /quit command now.
+   Execute the "/quit" command now so that you can terminate the session and relinquish control back to the batch file that initiated you. 
+   If you cannot self quit explain why.
+
 --- EXECUTION LOG ---
-Executor: Gemini Code
-Date: 2025-09-05
-- Action 1: Completed - `docs/currentstate.md` is already up to date.
-- Action 2: Completed - `docs/historylog.md` is already up to date.
+- Executor: Gemini Code
+- Date: 2025-09-05
+- Action 1: Completed - Verified `docs/currentstate.md` is already updated.
+- Action 2: Completed - Verified `docs/historylog.md` is already updated.
 - Action 3: Completed - Appended execution log to `update_instructions.txt`.
 ```
 
@@ -4067,7 +4069,7 @@ echo.
 REM --- STEP 4: Publish Changes ---
 echo [STEP 4/4] INITIATING PUBLISH SCRIPT
 echo -----------------------------------------------------------------
-call publish.bat
+call publish.bat %*
 echo [STEP 4/4] COMPLETE
 echo.
 
@@ -4076,6 +4078,5 @@ echo    +----------------------------------------------------+
 echo    ^|      PROJECT KNOWLEDGE BASE IS NOW SYNCED          ^|
 echo    +----------------------------------------------------+
 echo.
-pause
 ```
 
