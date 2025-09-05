@@ -3,7 +3,7 @@ setlocal enabledelayedexpansion
 
 REM =================================================================
 REM ==        Symposium Project Knowledge Base Updater             ==
-REM ==                  (v1.1 - With Progress Indicators)            ==
+REM ==                  (v1.2 - With Publish Call)                   ==
 REM =================================================================
 
 cd /d "%~dp0"
@@ -25,7 +25,7 @@ echo.
 echo.
 
 REM --- STEP 1: AI Execution ---
-echo [STEP 1/3] EXECUTING INSTRUCTIONS
+echo [STEP 1/4] EXECUTING INSTRUCTIONS
 echo -----------------------------------------------------------------
 echo   -- Tasking Gemini Code to process 'update_instructions.txt'.
 echo   -- This may take a moment. Please wait for completion...
@@ -42,18 +42,18 @@ if %errorlevel% neq 0 (
 )
 echo.
 echo   -- Gemini Code task complete.
-echo [STEP 1/3] COMPLETE
+echo [STEP 1/4] COMPLETE
 echo.
 
 REM --- STEP 2: Code Snapshot ---
-echo [STEP 2/3] GENERATING CODE SNAPSHOT
+echo [STEP 2/4] GENERATING CODE SNAPSHOT
 echo -----------------------------------------------------------------
 call python scripts/generate_code_snapshot.py
-echo [STEP 2/3] COMPLETE
+echo [STEP 2/4] COMPLETE
 echo.
 
 REM --- STEP 3: Archiving ---
-echo [STEP 3/3] ARCHIVING LOG FILE
+echo [STEP 3/4] ARCHIVING INSTRUCTION FILE
 echo -----------------------------------------------------------------
 for /f %%i in ('python -c "import datetime; print(datetime.datetime.now().strftime('%%Y-%%m-%%d_%%H-%%M-%%S'))"') do set "timestamp=%%i"
 set "archive_filename=%timestamp%_update_executed.txt"
@@ -76,7 +76,14 @@ if %errorlevel% neq 0 (
 ) else (
     echo   -- Instruction file successfully archived.
 )
-echo [STEP 3/3] COMPLETE
+echo [STEP 3/4] COMPLETE
+echo.
+
+REM --- STEP 4: Publish Changes ---
+echo [STEP 4/4] INITIATING PUBLISH SCRIPT
+echo -----------------------------------------------------------------
+call publish.bat
+echo [STEP 4/4] COMPLETE
 echo.
 
 echo.
